@@ -1,109 +1,124 @@
 package com.lohjason.asciicam;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.hardware.Camera;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
+import android.util.TypedValue;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.lohjason.asciicam.Util.WindowUtils;
+import com.lohjason.asciicam.camera.CameraFrameProcessor;
+import com.lohjason.asciicam.camera.CameraSource;
 
-    Button    button;
-    TextView  tvAscii;
-    ImageView ivOriginalImage;
+import java.io.IOException;
+
+public class MainActivity extends AppCompatActivity implements CameraFrameProcessor.AsciiCallbackListener{
+
+    Button       button;
+    TextView     tvAscii;
+    CameraSource cameraSource;
 
     int imageToShow = 0;
+    private final int TARGET_HEIGHT = 32;
+    private final int TARGET_WIDTH  = 32;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
         button = findViewById(R.id.btn_start);
         tvAscii = findViewById(R.id.tv_ascii);
         tvAscii.setTypeface(Typeface.MONOSPACE);
-        ivOriginalImage = findViewById(R.id.iv_originalimage);
+
+        AsciiConverter asciiConverter = new AsciiConverter(TARGET_HEIGHT, TARGET_WIDTH);
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cat);
+
         button.setOnClickListener(v -> {
-            int modImageToShow = imageToShow % 3;
-            if (modImageToShow == 0) {
-                showBitmap();
-            } else if (modImageToShow == 1){
-                showAscii(false);
-            } else {
-                showAscii(true);
-            }
-            imageToShow++;
+            startCamera();
         });
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 123);
+
+
+
     }
 
-    private void showBitmap() {
-        Bitmap bitmap       = BitmapFactory.decodeResource(getResources(), R.drawable.dog);
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 64, 64, false);
-        tvAscii.setVisibility(View.GONE);
-        ivOriginalImage.setVisibility(View.VISIBLE);
-        ivOriginalImage.setImageBitmap(scaledBitmap);
+    private void initCamera() {
+        cameraSource = new CameraSource.Builder(MainActivity.this)
+                .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setRequestedFps(24f)
+                .setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)
+                .setRequestedPreviewSize(320, 240)
+                .build(new CameraFrameProcessor(MainActivity.this));
     }
 
-    private void showAscii(boolean invertDarkness) {
-        tvAscii.setVisibility(View.VISIBLE);
-        ivOriginalImage.setVisibility(View.GONE);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.dog);
 
-        int    targetHeight = 64;
-        int    targetWidth  = 64;
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, false).copy(Bitmap.Config.ARGB_8888, true);
-        int[]  scaledPixels = new int[targetHeight * targetWidth];
-        scaledBitmap.getPixels(scaledPixels, 0, targetWidth, 0, 0, targetWidth, targetHeight);
+    @Override
+    protected void onPause() {
+        if (cameraSource != null) {
+            cameraSource.stop();
+            cameraSource.release();
+            cameraSource = null;
+        }
+        super.onPause();
+    }
 
-        int[] brightness = new int[scaledPixels.length];
-        for (int i = 0; i < scaledPixels.length; i++) {
-            int color = scaledPixels[i];
-            int red   = (color >> 16) & 0xff;
-            int green = (color >> 8) & 0xff;
-            int blue  = (color >> 24) & 0xff;
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onResume() {
+        super.onResume();
+//        initCamera();
+//        try {
+//            cameraSource.start();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        Logg.d("+_", "Started Cam");
+    }
 
-            brightness[i] = (red + green + blue) / 3;
-            if (color != 0) {
-                Log.d("+_", "Original Value: " + scaledPixels[i]);
-                Log.d("+_", "Red: " + red + " Blue: " + blue + "Green: " + green);
-            }
-            if (brightness[i] > 0) {
-                Log.d("++_", "Brightness of " + brightness[i] + " was found");
-            }
+    @SuppressLint("MissingPermission")
+    private void startCamera() {
+        if (cameraSource == null) {
+
+        }
+        initCamera();
+        try {
+            cameraSource.start();
+            float rotation = cameraSource.getRotation();
+            Log.d("+_", "Got rotation: " + rotation);
+
+            tvAscii.setRotation(rotation);
+            float textSize = WindowUtils.getTextSizeForAsciiArt(this, 64);
+            tvAscii.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        String[] asciiArt = new String[targetHeight];
-        if(invertDarkness){
-            for (int i = 0; i < targetHeight; i++) {
-                char[] chars = new char[targetWidth];
-                for (int j = 0; j < targetWidth; j++) {
-                    chars[j] = TextConverter.getCharForBrightnessInverse(brightness[targetWidth * i + j]);
-                }
-                asciiArt[i] = new String(chars);
-            }
-        } else {
-            for (int i = 0; i < targetHeight; i++) {
-                char[] chars = new char[targetWidth];
-                for (int j = 0; j < targetWidth; j++) {
-                    chars[j] = TextConverter.getCharForBrightness(brightness[targetWidth * i + j]);
-                }
-                asciiArt[i] = new String(chars);
+        if (this.cameraSource != null) {
+            try {
+                cameraSource.start(null);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+    }
 
 
-        StringBuilder sb = new StringBuilder();
-        for (String s : asciiArt) {
-            sb.append(s).append('\n');
-        }
-
-        Log.d("+_", sb.toString());
-        tvAscii.setText(sb.toString());
+    @Override
+    public void newAsciiImage(String ascii) {
+        runOnUiThread( () -> {
+            tvAscii.setText(ascii);
+        });
     }
 }

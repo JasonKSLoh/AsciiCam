@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_label_side">16dp</dimen>
+    <dimen name="margin_label_top">16dp</dimen>
+    <dimen name="textsize_label">18sp</dimen>
+    <dimen name="margin_selector_side">16dp</dimen>
+    <dimen name="margin_button_top">16dp</dimen>
+    <dimen name="margin_button_side">32dp</dimen>
+    <dimen name="spinner_padding">2dp</dimen>
+</resources>

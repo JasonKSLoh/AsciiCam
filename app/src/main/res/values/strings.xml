@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">AsciiCam</string>
+    <string name="fps">FPS</string>
+    <string name="image_width">Ascii Image Width</string>
+    <string name="invert_brightness">Invert Brightness</string>
+    <string name="enable_normalization">Normalization</string>
+    <string name="start">Start</string>
+    <string name="use_front_camera">Use Front Camera</string>
+    <string name="share">Share</string>
+    <string name="save">Save / Share</string>
+    <string name="copy">Copy</string>
 </resources>

@@ -3,10 +3,11 @@ package com.lohjason.asciicam.camera;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 
-import com.lohjason.asciicam.AsciiConverter;
+import com.lohjason.asciicam.converters.AsciiConverter;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,33 +19,53 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class CameraFrameProcessor implements FrameProcessor {
     private AtomicBoolean isActive = new AtomicBoolean(false);
     private AsciiCallbackListener listener;
+    private int targetWidth = 64;
+    private int targetHeight = 64;
+    private boolean useNormalization = true;
+    private boolean invertDarkness = false;
 
-    public CameraFrameProcessor(AsciiCallbackListener listener) {
+    public CameraFrameProcessor(AsciiCallbackListener listener, int targetWidth, int targetHeight) {
         this.listener = listener;
+        if(targetHeight > 0){
+            this.targetHeight = targetHeight;
+        }
+        if(targetWidth > 0){
+            this.targetWidth = targetWidth;
+        }
     }
 
-    @Override
-    public void start() {
-        isActive.set(true);
+    public void setUseNormalization(boolean useNormalization){
+        this.useNormalization = useNormalization;
     }
-
-    @Override
-    public void stop() {
-        isActive.set(false);
+    public void setInvertDarkness(boolean invertDarkness){
+        this.invertDarkness = invertDarkness;
     }
 
     @Override
     public void processFrame(byte[] frameBytes, int width, int height, int rotation) {
-//        byte[] inputBytes = rotateArray(frameBytes, width, height, rotation);
+        if(isActive.get()){
+            return;
+        }
+        isActive.set(true);
+
         YuvImage              yuvImage = new YuvImage(frameBytes, ImageFormat.NV21, width, height, null);
         ByteArrayOutputStream os       = new ByteArrayOutputStream();
         yuvImage.compressToJpeg(new Rect(0, 0, width, height), 100, os);
         byte[] jpegByteArray = os.toByteArray();
         Bitmap bitmap        = BitmapFactory.decodeByteArray(jpegByteArray, 0, jpegByteArray.length);
 
-        AsciiConverter asciiConverter = new AsciiConverter(64, 64);
-        String         asciiArt       = asciiConverter.getAscii(bitmap, false, true);
+        Matrix matrix = new Matrix();
+        matrix.setRotate(rotation * 90);
+        if(rotation % 3 == 0){
+            matrix.postScale(-1, 1, (float)width / 2, (float)height / 2);
+        }
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, false);
+
+
+        AsciiConverter asciiConverter = new AsciiConverter(targetHeight, targetWidth);
+        String         asciiArt       = asciiConverter.getAscii(bitmap, invertDarkness, useNormalization);
         listener.newAsciiImage(asciiArt);
+        isActive.set(false);
     }
 
 

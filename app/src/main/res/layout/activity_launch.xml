@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="RtlHardcoded"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_blue_grey_600"
+    >
+
+
+
+    <TextView
+        android:id="@+id/tv_fps_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="@dimen/margin_label_side"
+        android:layout_marginTop="@dimen/margin_label_top"
+        android:textSize="@dimen/textsize_label"
+        android:text="@string/fps"
+        android:textColor="@color/launchPageTextColor"
+        />
+
+    <Spinner
+        android:id="@+id/spinner_fps"
+        android:background="@color/white"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tv_fps_label"
+        app:layout_constraintBottom_toBottomOf="@id/tv_fps_label"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/margin_selector_side"
+        android:gravity="center"
+        android:padding="@dimen/spinner_padding"
+        android:dropDownWidth="60dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_image_width_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_fps_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="@dimen/margin_label_side"
+        android:layout_marginTop="@dimen/margin_label_top"
+        android:textSize="@dimen/textsize_label"
+        android:text="@string/image_width"
+        android:textColor="@color/launchPageTextColor"
+        />
+
+    <Spinner
+        android:id="@+id/spinner_image_width"
+        android:background="@color/white"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tv_image_width_label"
+        app:layout_constraintBottom_toBottomOf="@id/tv_image_width_label"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/margin_selector_side"
+        android:gravity="center"
+        android:padding="@dimen/spinner_padding"
+        android:dropDownWidth="60dp"
+        />
+
+
+    <TextView
+        android:id="@+id/tv_front_camera_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_image_width_label"
+        android:layout_marginLeft="@dimen/margin_label_side"
+        android:layout_marginTop="@dimen/margin_label_top"
+        android:textSize="@dimen/textsize_label"
+        android:text="@string/use_front_camera"
+        android:textColor="@color/launchPageTextColor"
+        />
+
+    <Switch
+        android:id="@+id/switch_front_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tv_front_camera_label"
+        app:layout_constraintBottom_toBottomOf="@id/tv_front_camera_label"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/margin_selector_side"
+        />
+
+    <TextView
+        android:id="@+id/tv_normalization_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_front_camera_label"
+        android:layout_marginLeft="@dimen/margin_label_side"
+        android:layout_marginTop="@dimen/margin_label_top"
+        android:textSize="@dimen/textsize_label"
+        android:text="@string/enable_normalization"
+        android:textColor="@color/launchPageTextColor"
+        />
+
+    <Switch
+        android:id="@+id/switch_normalization"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tv_normalization_label"
+        app:layout_constraintBottom_toBottomOf="@id/tv_normalization_label"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/margin_selector_side"
+        />
+
+    <TextView
+        android:id="@+id/tv_invert_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_normalization_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="@dimen/margin_label_side"
+        android:layout_marginTop="@dimen/margin_label_top"
+        android:textSize="@dimen/textsize_label"
+        android:text="@string/invert_brightness"
+        android:textColor="@color/launchPageTextColor"
+        />
+
+    <Switch
+        android:id="@+id/switch_invert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tv_invert_label"
+        app:layout_constraintBottom_toBottomOf="@id/tv_invert_label"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/margin_selector_side"
+        />
+
+    <Button
+        android:id="@+id/btn_start_camera"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="@dimen/margin_button_top"
+        android:layout_marginLeft="@dimen/margin_button_side"
+        android:layout_marginRight="@dimen/margin_button_side"
+        android:textColor="@color/launchPageTextColor"
+        />
+
+    <LinearLayout
+        android:id="@+id/container_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible"
+        >
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

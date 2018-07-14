@@ -1,4 +1,4 @@
-package com.lohjason.asciicam;
+package com.lohjason.asciicam.converters;
 
 /**
  * TextConverter
@@ -12,9 +12,9 @@ public class TextConverter {
     private static final float  SCALE_FACTOR          = 256 / NUM_BRIGHTNESS_LEVELS;
 
 
-    public static char getCharForBrightness(int brightness, boolean asWhiteOnBlack) {
+    public static char getCharForBrightness(int brightness, boolean invertDarkness) {
         float brightnessFloat;
-        if (!asWhiteOnBlack) {
+        if (!invertDarkness) {
             brightnessFloat = (float) brightness;
         } else {
             brightnessFloat = 255f - brightness;
@@ -27,14 +27,14 @@ public class TextConverter {
     }
 
 
-    public static char getCharForBrightness(int brightness, boolean asWhiteOnBlack, int minBrightness, int maxBrightness) {
+    public static char getCharForBrightness(int brightness, boolean invertDarkness, int minBrightness, int maxBrightness) {
         float   range         = maxBrightness - minBrightness;
         float   relativeValue = brightness - minBrightness;
         range = range == 0 ? 1 : range;
         float normalizedBrightness = (255f * relativeValue) / (range);
 
         float brightnessFloat;
-        if (!asWhiteOnBlack) {
+        if (!invertDarkness) {
             brightnessFloat = normalizedBrightness;
         } else {
             brightnessFloat = 255f - normalizedBrightness;
@@ -42,6 +42,9 @@ public class TextConverter {
         int index = (int) (brightnessFloat / SCALE_FACTOR);
         if (index >= NUM_BRIGHTNESS_LEVELS) {
             index = NUM_BRIGHTNESS_LEVELS - 1;
+        }
+        if(index < 0){
+            index = 0;
         }
         return DISPLAY_CHAR_ARRAY[index];
     }

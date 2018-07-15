@@ -15,7 +15,6 @@
         android:background="@color/white"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btn_capture_ascii"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:gravity="center"
@@ -23,7 +22,7 @@
         tools:ignore="SmallSp"/>
     <!--</HorizontalScrollView>-->
 
-    <android.support.design.widget.FloatingActionButton
+    <ImageButton
         android:id="@+id/btn_capture_ascii"
         android:backgroundTint="@color/colorPrimary"
         android:layout_width="64dp"
@@ -33,6 +32,7 @@
         app:layout_constraintBottom_toTopOf="@id/seekbar_normalization"
         android:layout_margin="@dimen/margin_button_side"
         android:src="@drawable/ic_camera_24dp"
+        android:elevation="8dp"
         />
 
     <TextView

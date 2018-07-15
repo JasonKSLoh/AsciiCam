@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AsciiCam</string>
+    <string name="app_name">Generic Ascii /Cam</string>
     <string name="fps">FPS</string>
     <string name="image_width">Ascii Image Width</string>
     <string name="invert_brightness">Invert Brightness</string>

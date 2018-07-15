@@ -6,11 +6,11 @@ import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +25,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements CameraFrameProcessor.AsciiCallbackListener {
 
-    FloatingActionButton button;
+    ImageButton          button;
     TextView             tvAscii;
     SeekBar              seekbarNormalization;
     CameraSource         cameraSource;

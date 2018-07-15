@@ -10,12 +10,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.util.Linkify;
+import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.lohjason.asciicam.R;
 import com.lohjason.asciicam.Util.CameraConsts;
@@ -31,12 +39,12 @@ import java.util.List;
  */
 public class LaunchActivity extends AppCompatActivity {
 
-    Spinner spinnerFps;
-    Spinner spinnerImageWidth;
-    Switch  switchNormalization;
-    Switch  switchInvert;
-    Switch  switchFrontCamera;
-    Button  btnStartCamera;
+    Spinner      spinnerFps;
+    Spinner      spinnerImageWidth;
+    Switch       switchNormalization;
+    Switch       switchInvert;
+    Switch       switchFrontCamera;
+    Button       btnStartCamera;
     LinearLayout containerMain;
 
     private boolean isDisplayingFragment = false;
@@ -125,7 +133,7 @@ public class LaunchActivity extends AppCompatActivity {
         intent.putExtra(CameraConsts.KEY_FPS, fps);
         intent.putExtra(CameraConsts.KEY_IMG_WIDTH, imageWidth);
         intent.putExtra(CameraConsts.KEY_USE_FRONT_CAMERA, useFrontCamera);
-        if(normalize){
+        if (normalize) {
             intent.putExtra(CameraConsts.KEY_NORMALIZATION, CameraConsts.MAX_NORMALIZATION);
         } else {
             intent.putExtra(CameraConsts.KEY_NORMALIZATION, CameraConsts.DEFAULT_NORMALIZATION);
@@ -145,7 +153,7 @@ public class LaunchActivity extends AppCompatActivity {
 
 
     private void showDisplayFragment(String asciiImage, float textSize) {
-        if(isDisplayingFragment){
+        if (isDisplayingFragment) {
             return;
         }
         containerMain.setVisibility(View.VISIBLE);
@@ -232,17 +240,17 @@ public class LaunchActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void dismissDisplayFragment(){
+    private void dismissDisplayFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment        displayFragment = fragmentManager.findFragmentByTag(DisplayFragment.FRAGMENT_TAG);
-        if(displayFragment != null){
+        if (displayFragment != null) {
             fragmentManager.beginTransaction()
                     .remove(displayFragment)
                     .commitAllowingStateLoss();
         }
         containerMain.setVisibility(View.GONE);
         btnStartCamera.setVisibility(View.VISIBLE);
-        isDisplayingFragment  = false;
+        isDisplayingFragment = false;
     }
 
     @Override
@@ -251,6 +259,50 @@ public class LaunchActivity extends AppCompatActivity {
             dismissDisplayFragment();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_about) {
+            showAboutDialog();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showAboutDialog() {
+        String rawMessage = "Take your camera feed and turn it into an ascii image<br>" +
+                            "<h4>Usage</h4>Select what settings you want to use then start by pressing the <b>\"Start\"</b> button.<br>" +
+                            "Change the contrast by moving the slider bar. We recommend setting it to 50% or higher" +
+                            "<h4>Settings</h4>" +
+                            "<b>FPS:</b> Choose the capture rate. If your phone cannot process fast enough the frame will be skipped.<br>" +
+                            "<b>Ascii Image Width:</b> How many characters make up the image width. You may see lag when using a higher number<br>" +
+                            "<b>High Contrast:</b> Sets the contrast to max upon starting the camera.<br>" +
+                            "<b>Invert Brightness:</b> Dark turns to light and light turns to dark.<br>" +
+                            "<h4>Website</h4>Visit our site at http://asciicam.lohjason.com" +
+                            "<h4>Privacy</h4>We do not collect, log, or store any of your information<br>We do not serve or display any ads<Br>" +
+                            "For a fully detailed privacy policy, check our privacy page at http://privacy.lohjason.com";
+        Spanned message = Html.fromHtml(rawMessage);
+        AlertDialog aboutDialog = new AlertDialog.Builder(this)
+                .setTitle("About this app")
+                .setMessage(message)
+                .setNegativeButton("Ok", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
+        TextView textView = aboutDialog.findViewById(android.R.id.message);
+        if (textView != null) {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            Linkify.addLinks(textView, Linkify.ALL);
         }
     }
 }

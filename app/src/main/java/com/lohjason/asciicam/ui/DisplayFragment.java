@@ -88,7 +88,6 @@ public class DisplayFragment extends Fragment {
             Canvas canvas = new Canvas(newBitmap);
             canvas.drawColor(0xFFFFFFFF);
             Paint alphaPaint = new Paint();
-//            alphaPaint.setAlpha(255);
             canvas.drawBitmap(originalBitmap, 0, 0, alphaPaint);
             bitmap = newBitmap;
 

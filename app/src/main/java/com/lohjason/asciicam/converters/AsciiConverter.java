@@ -46,9 +46,6 @@ public class AsciiConverter {
             if (i % 2 == 1) {
                 for (int j = 0; j < targetWidth; j++) {
                     int color = scaledPixels[(i * targetWidth) + j];
-//                    int red   = (color >> 16) & 0xff;
-//                    int green = (color >> 8) & 0xff;
-//                    int blue  = color & 0xff;
 
                     int red = (color >> 16 & 0xff) << 2;
                     int green = (color >> 18 & 0xff);

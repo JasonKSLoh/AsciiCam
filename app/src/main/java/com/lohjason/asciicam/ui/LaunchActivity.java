@@ -177,9 +177,9 @@ public class LaunchActivity extends AppCompatActivity {
                         onBtnStartCameraPressed();
                     } else {
                         if (!PermissionUtils.canRequestCameraPermission(this)) {
-                            showCameraRationaleDialog(true);
-                        } else {
                             showCameraRationaleDialog(false);
+                        } else {
+                            showCameraRationaleDialog(true);
                         }
                     }
                 }

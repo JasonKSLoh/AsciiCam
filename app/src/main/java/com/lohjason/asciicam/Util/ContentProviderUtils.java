@@ -19,7 +19,7 @@ import java.util.Locale;
 public class ContentProviderUtils {
     private static final String PATH          = "images";
     private static final String FILENAME      = "AsciiCamImage";
-    private static final String FILEEXTENSION = ".png";
+    private static final String FILEEXTENSION = ".jpg";
     private static final String AUTHORITY     = "com.lohjason.asciicam.fileprovider";
 
     public static boolean saveBitmap(Context context, Bitmap bitmap) {
@@ -32,7 +32,7 @@ public class ContentProviderUtils {
                               + FILEEXTENSION;
             File imageFile = new File(cachePath, fileName);
             FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
             return true;
@@ -59,7 +59,7 @@ public class ContentProviderUtils {
             intent.setDataAndType(imageUri, context.getContentResolver().getType(imageUri));
             intent.setType("image/png");
             intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            return Intent.createChooser(intent, "Share the barcode image");
+            return Intent.createChooser(intent, "Share the Ascii Image");
         }
         return null;
     }

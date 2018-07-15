@@ -30,20 +30,33 @@
         android:layout_height="64dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/seekbar_normalization"
         android:layout_margin="@dimen/margin_button_side"
         android:src="@drawable/ic_camera_24dp"
         />
 
-    <!--<Button-->
-        <!--android:id="@+id/btn_capture_ascii"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Capture Image"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"/>-->
-    <!--</FrameLayout>-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/seekbar_normalization"
+        app:layout_constraintBottom_toTopOf="@id/seekbar_normalization"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="4dp"
+        android:text="@string/contrast"
+        android:textStyle="bold"
+        />
+
+    <SeekBar
+        android:id="@+id/seekbar_normalization"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/margin_button_side"
+        android:layout_marginRight="@dimen/margin_button_side"
+        android:layout_marginBottom="@dimen/margin_button_side"
+        />
 
 
 </android.support.constraint.ConstraintLayout>

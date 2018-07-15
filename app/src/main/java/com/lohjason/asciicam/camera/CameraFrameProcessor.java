@@ -23,6 +23,7 @@ public class CameraFrameProcessor implements FrameProcessor {
     private int targetHeight = 64;
     private boolean useNormalization = true;
     private boolean invertDarkness = false;
+    private int normalizationLevel = 0;
 
     public CameraFrameProcessor(AsciiCallbackListener listener, int targetWidth, int targetHeight) {
         this.listener = listener;
@@ -34,9 +35,11 @@ public class CameraFrameProcessor implements FrameProcessor {
         }
     }
 
-    public void setUseNormalization(boolean useNormalization){
-        this.useNormalization = useNormalization;
+
+    public void setNormalizationLevel(int normalizationLevel){
+        this.normalizationLevel = normalizationLevel;
     }
+
     public void setInvertDarkness(boolean invertDarkness){
         this.invertDarkness = invertDarkness;
     }
@@ -63,7 +66,7 @@ public class CameraFrameProcessor implements FrameProcessor {
 
 
         AsciiConverter asciiConverter = new AsciiConverter(targetHeight, targetWidth);
-        String         asciiArt       = asciiConverter.getAscii(bitmap, invertDarkness, useNormalization);
+        String         asciiArt       = asciiConverter.getAscii(bitmap, invertDarkness, normalizationLevel);
         listener.newAsciiImage(asciiArt);
         isActive.set(false);
     }

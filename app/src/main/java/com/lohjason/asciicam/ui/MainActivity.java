@@ -7,14 +7,16 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Window;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lohjason.asciicam.R;
 import com.lohjason.asciicam.Util.CameraConsts;
-import com.lohjason.asciicam.Util.Logg;
 import com.lohjason.asciicam.Util.WindowUtils;
 import com.lohjason.asciicam.camera.CameraFrameProcessor;
 import com.lohjason.asciicam.camera.CameraSource;
@@ -25,22 +27,54 @@ public class MainActivity extends AppCompatActivity implements CameraFrameProces
 
     FloatingActionButton button;
     TextView             tvAscii;
+    SeekBar              seekbarNormalization;
     CameraSource         cameraSource;
+    CameraFrameProcessor processor;
     ConstraintLayout     layoutMain;
+    int normalizationLevel = CameraConsts.DEFAULT_NORMALIZATION;
 
     private int selectedWidth = 128;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            getSupportActionBar().hide();
+        }
         setContentView(R.layout.activity_main);
+        setupViews();
+    }
+
+    private void setupViews() {
         button = findViewById(R.id.btn_capture_ascii);
         tvAscii = findViewById(R.id.tv_ascii);
         tvAscii.setTypeface(Typeface.MONOSPACE);
         layoutMain = findViewById(R.id.layout_main);
+        seekbarNormalization = findViewById(R.id.seekbar_normalization);
 
         button.setOnClickListener(v -> {
             captureAsciiImage();
+        });
+
+        seekbarNormalization.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                normalizationLevel = (int)(progress / CameraConsts.NORMALIZATION_SCALE);
+                processor.setNormalizationLevel(normalizationLevel);
+                Log.d("+_", "Normalization set to: " + normalizationLevel);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
         });
     }
 
@@ -55,9 +89,6 @@ public class MainActivity extends AppCompatActivity implements CameraFrameProces
         intent.putExtra(CameraConsts.KEY_ASCII_IMAGE, tvAscii.getText().toString());
         intent.putExtra(CameraConsts.KEY_ASCII_TEXT_SIZE, tvAscii.getTextSize());
 
-        Logg.d("+_", "Saved Ascii Image:\n" + tvAscii.getText().toString());
-        Logg.d("+_", "Text size was: " + tvAscii.getTextSize());
-
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -70,18 +101,19 @@ public class MainActivity extends AppCompatActivity implements CameraFrameProces
             finish();
             return;
         }
-        float   fps              = intent.getFloatExtra(CameraConsts.KEY_FPS, 24);
-        int     imgWidth         = intent.getIntExtra(CameraConsts.KEY_IMG_WIDTH, 128);
-        boolean useFrontCamera   = intent.getBooleanExtra(CameraConsts.KEY_USE_FRONT_CAMERA, false);
-        boolean useNormalization = intent.getBooleanExtra(CameraConsts.KEY_NORMALIZATION, true);
-        boolean invert           = intent.getBooleanExtra(CameraConsts.KEY_INVERT, false);
+        float   fps            = intent.getFloatExtra(CameraConsts.KEY_FPS, 24);
+        int     imgWidth       = intent.getIntExtra(CameraConsts.KEY_IMG_WIDTH, 128);
+        boolean useFrontCamera = intent.getBooleanExtra(CameraConsts.KEY_USE_FRONT_CAMERA, false);
+        normalizationLevel = intent.getIntExtra(CameraConsts.KEY_NORMALIZATION, CameraConsts.DEFAULT_NORMALIZATION);
+        boolean invert = intent.getBooleanExtra(CameraConsts.KEY_INVERT, false);
         selectedWidth = imgWidth;
 
 
-        @SuppressWarnings("SuspiciousNameCombination")
-        CameraFrameProcessor processor = new CameraFrameProcessor(MainActivity.this, imgWidth, imgWidth);
+        //noinspection SuspiciousNameCombination
+        processor = new CameraFrameProcessor(MainActivity.this, imgWidth, imgWidth);
         processor.setInvertDarkness(invert);
-        processor.setUseNormalization(useNormalization);
+//        processor.setNormalizationLevel(normalizationLevel);
+        seekbarNormalization.setProgress((int)(normalizationLevel * CameraConsts.NORMALIZATION_SCALE));
         int facing = useFrontCamera ? CameraSource.CAMERA_FACING_FRONT : CameraSource.CAMERA_FACING_BACK;
 
         int requestedPreviewWidth  = imgWidth > 256 ? 640 : 320;

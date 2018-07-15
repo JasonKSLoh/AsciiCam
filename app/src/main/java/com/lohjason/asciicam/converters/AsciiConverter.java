@@ -1,6 +1,7 @@
 package com.lohjason.asciicam.converters;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +22,7 @@ public class AsciiConverter {
     }
 
     //Bitmap must be ARG_B8888
-    public String getAscii(Bitmap bitmap, boolean useBlackBackground, boolean useNormalization) {
+    public String getAscii(Bitmap bitmap, boolean useBlackBackground, int normalizationLevel) {
         float heightScale = bitmap.getHeight() / targetHeight;
         float widthScale  = bitmap.getWidth() / targetWidth;
         float scale       = heightScale > widthScale ? heightScale : widthScale;
@@ -32,14 +33,6 @@ public class AsciiConverter {
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true);
         int[]  scaledPixels = new int[targetWidth * targetHeight];
         scaledBitmap.getPixels(scaledPixels, 0, targetWidth, 0, 0, targetWidth, targetHeight);
-
-//        Bitmap      bmpMonochrome = Bitmap.createBitmap(scaledBitmap.getWidth(), scaledBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-//        Canvas      canvas        = new Canvas(bmpMonochrome);
-//        ColorMatrix ma            = new ColorMatrix();
-//        ma.setSaturation(0);
-//        Paint paint = new Paint();
-//        paint.setColorFilter(new ColorMatrixColorFilter(ma));
-//        canvas.drawBitmap(scaledBitmap, 0, 0, paint);
 
         int[] brightness   = new int[scaledPixels.length / 2];
         int   outputHeight = targetHeight / 2;
@@ -73,13 +66,16 @@ public class AsciiConverter {
             }
         }
 
-        Collections.sort(brightnessList);
-        int minCutoff = brightnessList.get(brightness.length * 35 / 100);
-        int maxCutoff = brightnessList.get(brightness.length * 65 / 100);
 
         String[] asciiArt = new String[outputHeight];
 
-        if(useNormalization){
+        if(normalizationLevel > 0){
+            Collections.sort(brightnessList);
+            int minCutoff = brightnessList.get(brightness.length * normalizationLevel / 100);
+            int maxCutoff = brightnessList.get(brightness.length * (100 - normalizationLevel) / 100);
+
+            Log.d("+_", "MinCutoff: " + minCutoff + " MaxCutoff: " + maxCutoff);
+
             for (int i = 0; i < outputHeight; i++) {
                 char[] chars = new char[targetWidth];
                 for (int j = 0; j < targetWidth; j++) {

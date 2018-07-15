@@ -23,7 +23,7 @@ public class SharedPrefsUtils {
 
     public static boolean getNormalization(Context context){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getBoolean(CameraConsts.KEY_NORMALIZATION, CameraConsts.DEFAULT_NORMALIZATION);
+        return sharedPreferences.getBoolean(CameraConsts.KEY_NORMALIZATION, true);
     }
     public static boolean getInvert(Context context){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);

@@ -60,7 +60,8 @@ public class LaunchActivity extends AppCompatActivity {
 
         List<String> fpsValues = new ArrayList<>();
         for (float fps : CameraConsts.FPS_VALUES) {
-            fpsValues.add(String.format("%.0f", fps));
+            String spinnerText = String.format("%.0f", fps);
+            fpsValues.add(spinnerText);
         }
         ArrayAdapter<String> spinnerAdapterFps = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, fpsValues);
         spinnerAdapterFps.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -68,7 +69,8 @@ public class LaunchActivity extends AppCompatActivity {
 
         List<String> imageWidthValues = new ArrayList<>();
         for (int imgWidth : CameraConsts.IMAGE_WIDTHS) {
-            imageWidthValues.add(Integer.toString(imgWidth));
+            String spinnerText = Integer.toString(imgWidth);
+            imageWidthValues.add(spinnerText);
         }
 
         ArrayAdapter<String> spinnerAdapterImageWidth = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, imageWidthValues);
@@ -123,7 +125,11 @@ public class LaunchActivity extends AppCompatActivity {
         intent.putExtra(CameraConsts.KEY_FPS, fps);
         intent.putExtra(CameraConsts.KEY_IMG_WIDTH, imageWidth);
         intent.putExtra(CameraConsts.KEY_USE_FRONT_CAMERA, useFrontCamera);
-        intent.putExtra(CameraConsts.KEY_NORMALIZATION, normalize);
+        if(normalize){
+            intent.putExtra(CameraConsts.KEY_NORMALIZATION, CameraConsts.MAX_NORMALIZATION);
+        } else {
+            intent.putExtra(CameraConsts.KEY_NORMALIZATION, CameraConsts.DEFAULT_NORMALIZATION);
+        }
         intent.putExtra(CameraConsts.KEY_INVERT, invert);
 
         startActivityForResult(intent, CameraConsts.REQUEST_CODE_PREVIEW);
@@ -134,7 +140,7 @@ public class LaunchActivity extends AppCompatActivity {
         SharedPrefsUtils.setImageWidth(this, CameraConsts.IMAGE_WIDTHS[spinnerImageWidth.getSelectedItemPosition()]);
         SharedPrefsUtils.setNormalization(this, switchNormalization.isChecked());
         SharedPrefsUtils.setInvert(this, switchInvert.isChecked());
-        SharedPrefsUtils.setUseFrontCamera(this, switchInvert.isChecked());
+        SharedPrefsUtils.setUseFrontCamera(this, switchFrontCamera.isChecked());
     }
 
 

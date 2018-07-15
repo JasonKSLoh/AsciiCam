@@ -5,6 +5,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -80,8 +82,17 @@ public class DisplayFragment extends Fragment {
 
     private void onSaveImageClicked() {
         if(bitmap == null){
-            bitmap = getTextViewBitmap();
-            ContentProviderUtils.saveBitmap(requireContext(), bitmap);
+            Bitmap originalBitmap = getTextViewBitmap();
+
+            Bitmap newBitmap = Bitmap.createBitmap(originalBitmap.getWidth(), originalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(newBitmap);
+            canvas.drawColor(0xFFFFFFFF);
+            Paint alphaPaint = new Paint();
+//            alphaPaint.setAlpha(255);
+            canvas.drawBitmap(originalBitmap, 0, 0, alphaPaint);
+            bitmap = newBitmap;
+
+            ContentProviderUtils.saveBitmap(requireContext(), newBitmap);
         }
         Intent intent = ContentProviderUtils.getShareBitmapIntent(requireContext());
         requireContext().startActivity(intent);

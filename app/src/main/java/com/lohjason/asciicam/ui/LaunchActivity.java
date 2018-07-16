@@ -25,7 +25,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.lohjason.asciicam.MainApp;
 import com.lohjason.asciicam.R;
+import com.lohjason.asciicam.Util.BitmapHolder;
 import com.lohjason.asciicam.Util.CameraConsts;
 import com.lohjason.asciicam.Util.PermissionUtils;
 import com.lohjason.asciicam.Util.SharedPrefsUtils;
@@ -49,11 +51,14 @@ public class LaunchActivity extends AppCompatActivity {
 
     private boolean isDisplayingFragment = false;
 
+    BitmapHolder holder;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
         setupViews();
+        holder = ((MainApp)getApplication()).getBitmapHolder();
     }
 
     @SuppressLint("DefaultLocale")
@@ -152,14 +157,14 @@ public class LaunchActivity extends AppCompatActivity {
     }
 
 
-    private void showDisplayFragment(String asciiImage, float textSize) {
+    private void showDisplayFragment() {
         if (isDisplayingFragment) {
             return;
         }
         containerMain.setVisibility(View.VISIBLE);
         btnStartCamera.setVisibility(View.GONE);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        DisplayFragment displayFragment = DisplayFragment.getNewInstance(asciiImage, textSize);
+        DisplayFragment displayFragment = DisplayFragment.getNewInstance(holder);
         fragmentManager.beginTransaction()
                 .replace(R.id.container_main,
                          displayFragment,
@@ -218,13 +223,7 @@ public class LaunchActivity extends AppCompatActivity {
         switch (requestCode) {
             case CameraConsts.REQUEST_CODE_PREVIEW: {
                 if (resultCode == RESULT_OK) {
-                    String asciiImage = data.getStringExtra(CameraConsts.KEY_ASCII_IMAGE);
-                    float  textSize   = data.getFloatExtra(CameraConsts.KEY_ASCII_TEXT_SIZE, -1);
-                    if (asciiImage != null
-                        && !asciiImage.isEmpty()
-                        && textSize > 0) {
-                        showDisplayFragment(asciiImage, textSize);
-                    }
+                    showDisplayFragment();
                 }
                 break;
             }
@@ -283,6 +282,7 @@ public class LaunchActivity extends AppCompatActivity {
         String rawMessage = "Take your camera feed and turn it into an ascii image<br>" +
                             "<h4>Usage</h4>Select what settings you want to use then start by pressing the <b>\"Start\"</b> button.<br>" +
                             "Change the contrast by moving the slider bar. We recommend setting it to 50% or higher" +
+                            "Take a picture by pressing the Camera Icon Button" +
                             "<h4>Settings</h4>" +
                             "<b>FPS:</b> Choose the capture rate. If your phone cannot process fast enough the frame will be skipped.<br>" +
                             "<b>Ascii Image Width:</b> How many characters make up the image width. You may see lag when using a higher number<br>" +

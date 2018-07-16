@@ -18,10 +18,10 @@ public class CameraConsts {
     public static final int REQUEST_CODE_PREVIEW = 101;
 
     public static float[] FPS_VALUES   = new float[]{12f, 24f, 36f, 48f, 60f};
-    public static int[]   IMAGE_WIDTHS = new int[]{32, 64, 128, 256, 512};
+    public static int[]   IMAGE_WIDTHS = new int[]{30, 60, 120, 240, 480};
 
     public static final float DEFAULT_FPS = 24;
-    public static final int DEFAULT_IMAGE_WIDTH = 128;
+    public static final int DEFAULT_IMAGE_WIDTH = 120;
     public static final int DEFAULT_NORMALIZATION = 25;
     public static final boolean DEFAULT_USE_FRONT_CAMERA = false;
     public static final boolean DEFAULT_INVERT = false;

@@ -3,11 +3,10 @@ package com.lohjason.asciicam.camera;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 
-import com.lohjason.asciicam.converters.AsciiConverter;
+import com.lohjason.asciicam.converters.ImageProcessor;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,23 +15,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * CameraFrameProcessor
  * Created by Jason on 14/7/2018.
  */
-public class CameraFrameProcessor implements FrameProcessor {
+public class CameraFrameProcessor implements FrameProcessor, ImageProcessor.ImageProcessedListener {
     private AtomicBoolean isActive = new AtomicBoolean(false);
     private AsciiCallbackListener listener;
-    private int targetWidth = 64;
-    private int targetHeight = 64;
-    private boolean useNormalization = true;
+    private int targetWidth = 60;
     private boolean invertDarkness = false;
     private int normalizationLevel = 0;
 
-    public CameraFrameProcessor(AsciiCallbackListener listener, int targetWidth, int targetHeight) {
+    private ImageProcessor imageProcessor;
+
+    public CameraFrameProcessor(ImageProcessor imageProcessor, int targetWidth, AsciiCallbackListener listener) {
         this.listener = listener;
-        if(targetHeight > 0){
-            this.targetHeight = targetHeight;
-        }
-        if(targetWidth > 0){
-            this.targetWidth = targetWidth;
-        }
+        this.imageProcessor = imageProcessor;
+        this.targetWidth = targetWidth;
     }
 
 
@@ -57,23 +52,22 @@ public class CameraFrameProcessor implements FrameProcessor {
         byte[] jpegByteArray = os.toByteArray();
         Bitmap bitmap        = BitmapFactory.decodeByteArray(jpegByteArray, 0, jpegByteArray.length);
 
-        Matrix matrix = new Matrix();
-        matrix.setRotate(rotation * 90);
-        if(rotation % 3 == 0){
-            matrix.postScale(-1, 1, (float)width / 2, (float)height / 2);
-        }
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, false);
+        imageProcessor.processImage(bitmap,
+                                    rotation * 90,
+                                    targetWidth,
+                                    0xFF000000,
+                                    normalizationLevel,
+                                    invertDarkness);
+    }
 
-
-        AsciiConverter asciiConverter = new AsciiConverter(targetHeight, targetWidth);
-        String         asciiArt       = asciiConverter.getAscii(bitmap, invertDarkness, normalizationLevel);
-        listener.newAsciiImage(asciiArt);
+    @Override
+    public void processingFinished(Bitmap bitmap) {
+        listener.newAsciiImage(bitmap);
         isActive.set(false);
     }
 
 
-
     public interface AsciiCallbackListener {
-        void newAsciiImage(String ascii);
+        void newAsciiImage(Bitmap asciiBitmap);
     }
 }

@@ -9,18 +9,19 @@
     android:orientation="vertical"
     tools:context=".ui.MainActivity">
 
-    <TextView
-        android:id="@+id/tv_ascii"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/iv_ascii"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:background="@color/white"
-        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:gravity="center"
-        android:textSize="16sp"
-        tools:ignore="SmallSp"/>
-    <!--</HorizontalScrollView>-->
+        app:layout_constraintBottom_toTopOf="@id/seekbar_normalization"
+        android:layout_marginBottom="16dp"
+        android:gravity="top"
+        />
+
 
     <ImageButton
         android:id="@+id/btn_capture_ascii"

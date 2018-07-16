@@ -2,6 +2,7 @@ package com.lohjason.asciicam;
 
 import android.app.Application;
 
+import com.lohjason.asciicam.Util.BitmapHolder;
 import com.lohjason.asciicam.Util.CameraConsts;
 import com.lohjason.asciicam.Util.SharedPrefsUtils;
 
@@ -11,12 +12,20 @@ import com.lohjason.asciicam.Util.SharedPrefsUtils;
  */
 public class MainApp extends Application {
 
+    private BitmapHolder bitmapHolder;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         initializePreferences();
+        bitmapHolder = new BitmapHolder();
     }
+
+    public BitmapHolder getBitmapHolder() {
+        return bitmapHolder;
+    }
+
 
     private void initializePreferences(){
         if(!SharedPrefsUtils.getHasInitialized(this)){

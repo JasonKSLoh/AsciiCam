@@ -6,15 +6,14 @@
     android:layout_height="match_parent"
     >
 
-    <TextView
-        android:id="@+id/tv_ascii_image"
+    <ImageView
+        android:id="@+id/iv_ascii_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/btn_save"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:typeface="monospace"
         />
 
     <Button
@@ -27,19 +26,7 @@
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btn_copy"
-        />
-
-    <Button
-        android:id="@+id/btn_copy"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_button_top"
-        android:background="@color/colorPrimary"
-        android:text="@string/copy"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/btn_save"
         app:layout_constraintRight_toRightOf="parent"
         />
+
 </android.support.constraint.ConstraintLayout>

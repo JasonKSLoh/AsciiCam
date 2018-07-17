@@ -1,6 +1,5 @@
 package com.lohjason.asciicam.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -25,15 +24,16 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.lohjason.asciicam.BitmapHolder;
 import com.lohjason.asciicam.MainApp;
 import com.lohjason.asciicam.R;
-import com.lohjason.asciicam.Util.BitmapHolder;
-import com.lohjason.asciicam.Util.CameraConsts;
-import com.lohjason.asciicam.Util.PermissionUtils;
-import com.lohjason.asciicam.Util.SharedPrefsUtils;
+import com.lohjason.asciicam.util.CameraConsts;
+import com.lohjason.asciicam.util.PermissionUtils;
+import com.lohjason.asciicam.util.SharedPrefsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * LaunchActivity
@@ -58,11 +58,25 @@ public class LaunchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
         setupViews();
-        holder = ((MainApp)getApplication()).getBitmapHolder();
+        holder = ((MainApp) getApplication()).getBitmapHolder();
     }
 
-    @SuppressLint("DefaultLocale")
     private void setupViews() {
+        bindViews();
+
+        btnStartCamera.setOnClickListener(v -> {
+            if (PermissionUtils.hasCameraPermission(this)) {
+                onBtnStartCameraPressed();
+            } else {
+                PermissionUtils.requestCameraPermission(this);
+            }
+        });
+        setupSpinners();
+
+        restoreSavedPreferences();
+    }
+
+    private void bindViews(){
         spinnerFps = findViewById(R.id.spinner_fps);
         spinnerImageWidth = findViewById(R.id.spinner_image_width);
         switchNormalization = findViewById(R.id.switch_normalization);
@@ -70,10 +84,12 @@ public class LaunchActivity extends AppCompatActivity {
         switchFrontCamera = findViewById(R.id.switch_front_camera);
         btnStartCamera = findViewById(R.id.btn_start_camera);
         containerMain = findViewById(R.id.container_main);
+    }
 
+    private void setupSpinners() {
         List<String> fpsValues = new ArrayList<>();
         for (float fps : CameraConsts.FPS_VALUES) {
-            String spinnerText = String.format("%.0f", fps);
+            String spinnerText = String.format(Locale.US, "%.0f", fps);
             fpsValues.add(spinnerText);
         }
         ArrayAdapter<String> spinnerAdapterFps = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, fpsValues);
@@ -89,19 +105,6 @@ public class LaunchActivity extends AppCompatActivity {
         ArrayAdapter<String> spinnerAdapterImageWidth = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, imageWidthValues);
         spinnerAdapterImageWidth.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerImageWidth.setAdapter(spinnerAdapterImageWidth);
-
-        switchNormalization.setChecked(true);
-        switchInvert.setChecked(false);
-
-        btnStartCamera.setOnClickListener(v -> {
-            if (PermissionUtils.hasCameraPermission(this)) {
-                onBtnStartCameraPressed();
-            } else {
-                PermissionUtils.requestCameraPermission(this);
-            }
-        });
-
-        restoreSavedPreferences();
     }
 
     private void restoreSavedPreferences() {
@@ -134,7 +137,7 @@ public class LaunchActivity extends AppCompatActivity {
 
         savePreferences();
 
-        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+        Intent intent = new Intent(getBaseContext(), CameraActivity.class);
         intent.putExtra(CameraConsts.KEY_FPS, fps);
         intent.putExtra(CameraConsts.KEY_IMG_WIDTH, imageWidth);
         intent.putExtra(CameraConsts.KEY_USE_FRONT_CAMERA, useFrontCamera);
@@ -157,21 +160,7 @@ public class LaunchActivity extends AppCompatActivity {
     }
 
 
-    private void showDisplayFragment() {
-        if (isDisplayingFragment) {
-            return;
-        }
-        containerMain.setVisibility(View.VISIBLE);
-        btnStartCamera.setVisibility(View.GONE);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        DisplayFragment displayFragment = DisplayFragment.getNewInstance(holder);
-        fragmentManager.beginTransaction()
-                .replace(R.id.container_main,
-                         displayFragment,
-                         DisplayFragment.FRAGMENT_TAG)
-                .commitAllowingStateLoss();
-        isDisplayingFragment = true;
-    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -195,15 +184,15 @@ public class LaunchActivity extends AppCompatActivity {
     }
 
     private void showCameraRationaleDialog(boolean canRequestPermission) {
-        String requestMessage = "The camera permission is needed for this app to work. If you do not grant this permission, it cannot convert your camera feed to ASCII images.\nDo you want to grant the Camera Permission?";
+        String requestMessage = getString(R.string.camera_permission_message);
         if (!canRequestPermission) {
-            requestMessage = requestMessage + "\nYou will need to grant the permission from the App's settings page";
+            requestMessage = requestMessage + getString(R.string.open_permission_settings_message);
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle("Camera")
+                .setTitle(R.string.camera_permission_title)
                 .setMessage(requestMessage)
-                .setPositiveButton("Yes", (dialog, which) -> {
+                .setPositiveButton(R.string.ok, (dialog, which) -> {
                     dialog.dismiss();
                     if (canRequestPermission) {
                         PermissionUtils.requestCameraPermission(this);
@@ -211,11 +200,29 @@ public class LaunchActivity extends AppCompatActivity {
                         PermissionUtils.openSettingsPage(this);
                     }
                 })
-                .setNegativeButton("Not Now", (dialog, which) -> {
+                .setNegativeButton(R.string.not_now, (dialog, which) -> {
                     dialog.dismiss();
                 })
                 .setCancelable(true);
         builder.show();
+    }
+
+
+    private void showAboutDialog() {
+        String  rawMessage = getString(R.string.about_app_message);
+        Spanned message    = Html.fromHtml(rawMessage);
+        AlertDialog aboutDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.about_app_title)
+                .setMessage(message)
+                .setNegativeButton(R.string.dismiss, (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
+        TextView textView = aboutDialog.findViewById(android.R.id.message);
+        if (textView != null) {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            Linkify.addLinks(textView, Linkify.ALL);
+        }
     }
 
     @Override
@@ -237,6 +244,22 @@ public class LaunchActivity extends AppCompatActivity {
     protected void onDestroy() {
         savePreferences();
         super.onDestroy();
+    }
+
+    private void showDisplayFragment() {
+        if (isDisplayingFragment) {
+            return;
+        }
+        containerMain.setVisibility(View.VISIBLE);
+        btnStartCamera.setVisibility(View.GONE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        DisplayFragment displayFragment = DisplayFragment.getNewInstance(holder);
+        fragmentManager.beginTransaction()
+                .replace(R.id.container_main,
+                         displayFragment,
+                         DisplayFragment.FRAGMENT_TAG)
+                .commitAllowingStateLoss();
+        isDisplayingFragment = true;
     }
 
     private void dismissDisplayFragment() {
@@ -278,31 +301,4 @@ public class LaunchActivity extends AppCompatActivity {
         }
     }
 
-    private void showAboutDialog() {
-        String rawMessage = "Take your camera feed and turn it into an ascii image<br>" +
-                            "<h4>Usage</h4>Select what settings you want to use then start by pressing the <b>\"Start\"</b> button.<br>" +
-                            "Change the contrast by moving the slider bar. We recommend setting it to 50% or higher" +
-                            "Take a picture by pressing the Camera Icon Button" +
-                            "<h4>Settings</h4>" +
-                            "<b>FPS:</b> Choose the capture rate. If your phone cannot process fast enough the frame will be skipped.<br>" +
-                            "<b>Ascii Image Width:</b> How many characters make up the image width. You may see lag when using a higher number<br>" +
-                            "<b>High Contrast:</b> Sets the contrast to max upon starting the camera.<br>" +
-                            "<b>Invert Brightness:</b> Dark turns to light and light turns to dark.<br>" +
-                            "<h4>Website</h4>Visit our site at http://asciicam.lohjason.com" +
-                            "<h4>Privacy</h4>We do not collect, log, or store any of your information<br>We do not serve or display any ads<Br>" +
-                            "For a fully detailed privacy policy, check our privacy page at http://privacy.lohjason.com";
-        Spanned message = Html.fromHtml(rawMessage);
-        AlertDialog aboutDialog = new AlertDialog.Builder(this)
-                .setTitle("About this app")
-                .setMessage(message)
-                .setNegativeButton("Ok", (dialog, which) -> {
-                    dialog.dismiss();
-                })
-                .show();
-        TextView textView = aboutDialog.findViewById(android.R.id.message);
-        if (textView != null) {
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-            Linkify.addLinks(textView, Linkify.ALL);
-        }
-    }
 }

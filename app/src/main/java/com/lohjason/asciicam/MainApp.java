@@ -2,9 +2,8 @@ package com.lohjason.asciicam;
 
 import android.app.Application;
 
-import com.lohjason.asciicam.Util.BitmapHolder;
-import com.lohjason.asciicam.Util.CameraConsts;
-import com.lohjason.asciicam.Util.SharedPrefsUtils;
+import com.lohjason.asciicam.util.CameraConsts;
+import com.lohjason.asciicam.util.SharedPrefsUtils;
 
 /**
  * MainApp

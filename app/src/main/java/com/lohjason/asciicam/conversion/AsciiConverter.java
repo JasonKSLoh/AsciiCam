@@ -1,16 +1,15 @@
-package com.lohjason.asciicam.converters;
+package com.lohjason.asciicam.conversion;
 
 /**
- * TextConverter
+ * AsciiConverter
  * Created by jason on 13/7/18.
  */
-public class TextConverter {
+public class AsciiConverter {
 
     private static final String DISPLAY_CHARS         = "$@B%8&WM#*oahkbdqwmZO0QLCJUYXzcvunxrjft/|)1}]?-_+~>i!lI;:,\"^`'. ";
     private static final char[] DISPLAY_CHAR_ARRAY    = DISPLAY_CHARS.toCharArray();
     private static final int    NUM_BRIGHTNESS_LEVELS = DISPLAY_CHAR_ARRAY.length;
     private static final float  SCALE_FACTOR          = 256 / NUM_BRIGHTNESS_LEVELS;
-
 
     public static char getCharForBrightness(int brightness, boolean invertDarkness) {
         float brightnessFloat;

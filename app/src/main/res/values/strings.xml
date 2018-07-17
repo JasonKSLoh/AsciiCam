@@ -10,4 +10,12 @@
     <string name="save">Save / Share</string>
     <string name="copy">Copy</string>
     <string name="contrast">Contrast</string>
+    <string name="about_app_message"><![CDATA[Take your camera feed and turn it into an ascii image<br><h4>Usage</h4>Select what settings you want to use then start by pressing the <b>\"Start\"</b> button.<br>Change the contrast by moving the slider bar. We recommend setting it to 50%% or higherTake a picture by pressing the Camera Icon Button<h4>Settings</h4><b>FPS:</b> Choose the capture rate. If your phone cannot process fast enough the frame will be skipped.<br><b>Ascii Image Width:</b> How many characters make up the image width. You may see lag when using a higher number<br><b>High Contrast:</b> Sets the contrast to max upon starting the camera.<br><b>Invert Brightness:</b> Dark turns to light and light turns to dark.<br><h4>Website</h4>Visit our site at http://asciicam.lohjason.com<h4>Privacy</h4>We do not collect, log, or store any of your information<br>We do not serve or display any ads<Br>For a fully detailed privacy policy, check our privacy page at http://privacy.lohjason.com]]></string>
+    <string name="about_app_title">About this app</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="camera_permission_message">The camera permission is needed for this app to work. If you do not grant this permission, it cannot convert your camera feed to ASCII images.\nDo you want to grant the Camera Permission?</string>
+    <string name="open_permission_settings_message">\nYou will need to grant the permission from the App\'s settings page</string>
+    <string name="camera_permission_title">Camera</string>
+    <string name="ok">OK</string>
+    <string name="not_now">Not Now</string>
 </resources>

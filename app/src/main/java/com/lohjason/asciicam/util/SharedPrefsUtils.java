@@ -1,4 +1,4 @@
-package com.lohjason.asciicam.Util;
+package com.lohjason.asciicam.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

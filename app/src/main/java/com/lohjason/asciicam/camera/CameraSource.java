@@ -12,7 +12,6 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.StringDef;
-import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -20,7 +19,7 @@ import android.view.WindowManager;
 
 import com.google.android.gms.common.images.Size;
 import com.google.android.gms.vision.Frame;
-import com.lohjason.asciicam.Util.Logg;
+import com.lohjason.asciicam.util.Logg;
 
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -716,7 +715,6 @@ public class CameraSource {
         }
         Size pictureSize = sizePair.pictureSize();
         mPreviewSize = sizePair.previewSize();
-        Log.d("+_", "Preview Size: H:W = " + mPreviewSize.getHeight() + ":" + mPreviewSize.getWidth());
 
         int[] previewFpsRange = selectPreviewFpsRange(camera, mRequestedFps);
         if (previewFpsRange == null) {
@@ -983,7 +981,6 @@ public class CameraSource {
         mRotation = angle / 90;
 
 
-        Log.d("+_", "Display angle: " + displayAngle + " Angle: " + angle);
         camera.setDisplayOrientation(displayAngle);
         parameters.setRotation(angle);
 

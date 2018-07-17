@@ -1,4 +1,4 @@
-package com.lohjason.asciicam.Util;
+package com.lohjason.asciicam.util;
 
 import android.content.Context;
 import android.content.Intent;

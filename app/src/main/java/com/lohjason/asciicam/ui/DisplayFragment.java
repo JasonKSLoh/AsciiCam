@@ -13,8 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.lohjason.asciicam.R;
-import com.lohjason.asciicam.Util.BitmapHolder;
-import com.lohjason.asciicam.Util.ContentProviderUtils;
+import com.lohjason.asciicam.BitmapHolder;
+import com.lohjason.asciicam.util.ContentProviderUtils;
 
 /**
  * DisplayFragment
@@ -49,20 +49,12 @@ public class DisplayFragment extends Fragment {
     private void setupViews(View view) {
         btnSave = view.findViewById(R.id.btn_save);
         ivAsciiImage = view.findViewById(R.id.iv_ascii_image);
-
         ivAsciiImage.setImageBitmap(holder.getBitmap());
         btnSave.setOnClickListener(v -> {
             onSaveImageClicked();
         });
     }
 
-//    private void onCopyClicked() {
-//        ClipboardManager clipboardManager = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-//        ClipData         clipData         = ClipData.newPlainText("Ascii Image", "ABC");
-//        assert clipboardManager != null;
-//        clipboardManager.setPrimaryClip(clipData);
-//        Toast.makeText(requireContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
-//    }
 
     private void onSaveImageClicked() {
         Bitmap originalBitmap = holder.getBitmap();

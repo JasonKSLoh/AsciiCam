@@ -1,4 +1,4 @@
-package com.lohjason.asciicam.Util;
+package com.lohjason.asciicam.util;
 
 /**
  * CameraConsts
@@ -11,9 +11,6 @@ public class CameraConsts {
     public static final String KEY_NORMALIZATION    = "key_normalization";
     public static final String KEY_INVERT           = "key_invert";
     public static final String KEY_USE_FRONT_CAMERA = "key_use_front_camera";
-
-    public static final String KEY_ASCII_IMAGE     = "key_ascii_image";
-    public static final String KEY_ASCII_TEXT_SIZE = "key_ascii_text_size";
 
     public static final int REQUEST_CODE_PREVIEW = 101;
 

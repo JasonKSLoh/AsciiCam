@@ -1,4 +1,4 @@
-package com.lohjason.asciicam.converters;
+package com.lohjason.asciicam.conversion;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Typeface;
+
+import com.lohjason.asciicam.util.Logg;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,43 +19,52 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * ImageProcessor
+ * ThreadedBitmapProcessor
  * Created by jason on 16/7/18.
  */
-public class ImageProcessor {
-    private ImageProcessedListener listener;
-    private int             numFilteringThreads = 4;
-    private ExecutorService mainExecutor        = Executors.newFixedThreadPool(1);
-    private ExecutorService filterExecutor      = Executors.newFixedThreadPool(numFilteringThreads);
-    private AtomicBoolean   isProcessing        = new AtomicBoolean(false);
-    private AtomicBoolean   isDestroyed         = new AtomicBoolean(false);
+public class ThreadedBitmapProcessor implements BitmapProcessor {
+    private static final String LOG_TAG = "+_ThdBmpPrc";
+
+
+    private int     numFilteringThreads = 4;
+    private int     lastMinBrightness   = 255;
+    private int     lastMaxBrightness   = 0;
+    private BitmapProcessedListener listener;
     private final int outputWidth;
 
-    private int     lastMinBrightness = 255;
-    private int     lastMaxBrightness = 0;
-    private boolean flipHorizontal    = false;
-    Bitmap outBitmap;
-    Canvas canvas;
+    private ExecutorService mainExecutor   = Executors.newFixedThreadPool(1);
+    private ExecutorService filterExecutor = Executors.newFixedThreadPool(numFilteringThreads);
+    private AtomicBoolean   isProcessing   = new AtomicBoolean(false);
+    private AtomicBoolean   isDestroyed    = new AtomicBoolean(false);
 
-    public ImageProcessor(int outputWidth) {
+    private Bitmap outBitmap;
+    private Canvas canvas;
+
+    private boolean flipHorizontal      = false;
+
+
+    public ThreadedBitmapProcessor(int outputWidth) {
         this.outputWidth = outputWidth;
     }
 
-    public void setListener(ImageProcessedListener listener) {
+    @Override
+    public void setListener(BitmapProcessedListener listener) {
         this.listener = listener;
     }
 
+    @Override
     public void setFlipHorizontal(boolean flipHorizontal) {
         this.flipHorizontal = flipHorizontal;
     }
 
-    public void destroy() {
+    @Override
+    public void stopProcessing() {
         isDestroyed.set(true);
     }
 
-
+    @Override
     public void processImage(Bitmap bitmap, int rotation, int targetWidth, int color, int normalizationLevel, boolean invert) {
-        if (isProcessing.get()) {
+        if (isProcessing.get() || isDestroyed.get()) {
             return;
         }
         isProcessing.set(true);
@@ -66,7 +77,7 @@ public class ImageProcessor {
             if (listener != null) {
                 listener.processingFinished(processedBitmap);
             }
-            if(isDestroyed.get()){
+            if (isDestroyed.get()) {
                 mainExecutor.shutdown();
                 filterExecutor.shutdown();
             }
@@ -133,10 +144,10 @@ public class ImageProcessor {
                         int argb      = scaledBitmapBytes[index];
                         int greyscale = getGreyscaleFromArgb(argb);
                         brightnessList[index] = greyscale;
-                        char charToDraw = TextConverter.getCharForBrightness(greyscale,
-                                                                             invert,
-                                                                             lastMinBrightness,
-                                                                             lastMaxBrightness);
+                        char charToDraw = AsciiConverter.getCharForBrightness(greyscale,
+                                                                              invert,
+                                                                              lastMinBrightness,
+                                                                              lastMaxBrightness);
 
                         canvas.drawText(Character.toString(charToDraw),
                                         j * widthSpacing,
@@ -149,7 +160,7 @@ public class ImageProcessor {
         try {
             filterExecutor.invokeAll(callables);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logg.e(LOG_TAG, e.getMessage(), e);
         }
 
         Arrays.sort(brightnessList);
@@ -165,7 +176,6 @@ public class ImageProcessor {
         return outBitmap;
     }
 
-
     private int getGreyscaleFromArgb(int argb) {
         int r = argb >> 16 & 0xff;
         int g = argb >> 8 & 0xff;
@@ -173,9 +183,4 @@ public class ImageProcessor {
 
         return ((r << 2) + (g << 1) + b) / 7;
     }
-
-    public interface ImageProcessedListener {
-        void processingFinished(Bitmap bitmap);
-    }
-
 }

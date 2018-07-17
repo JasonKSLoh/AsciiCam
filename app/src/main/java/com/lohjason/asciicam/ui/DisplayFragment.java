@@ -50,9 +50,7 @@ public class DisplayFragment extends Fragment {
         btnSave = view.findViewById(R.id.btn_save);
         ivAsciiImage = view.findViewById(R.id.iv_ascii_image);
         ivAsciiImage.setImageBitmap(holder.getBitmap());
-        btnSave.setOnClickListener(v -> {
-            onSaveImageClicked();
-        });
+        btnSave.setOnClickListener(v -> onSaveImageClicked());
     }
 
 

@@ -200,9 +200,7 @@ public class LaunchActivity extends AppCompatActivity {
                         PermissionUtils.openSettingsPage(this);
                     }
                 })
-                .setNegativeButton(R.string.not_now, (dialog, which) -> {
-                    dialog.dismiss();
-                })
+                .setNegativeButton(R.string.not_now, (dialog, which) -> dialog.dismiss())
                 .setCancelable(true);
         builder.show();
     }
@@ -214,9 +212,7 @@ public class LaunchActivity extends AppCompatActivity {
         AlertDialog aboutDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.about_app_title)
                 .setMessage(message)
-                .setNegativeButton(R.string.dismiss, (dialog, which) -> {
-                    dialog.dismiss();
-                })
+                .setNegativeButton(R.string.dismiss, (dialog, which) -> dialog.dismiss())
                 .show();
         TextView textView = aboutDialog.findViewById(android.R.id.message);
         if (textView != null) {

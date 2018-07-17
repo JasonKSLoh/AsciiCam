@@ -4,6 +4,7 @@ package com.lohjason.asciicam.conversion;
  * AsciiConverter
  * Created by jason on 13/7/18.
  */
+@SuppressWarnings("unused")
 public class AsciiConverter {
 
     private static final String DISPLAY_CHARS         = "$@B%8&WM#*oahkbdqwmZO0QLCJUYXzcvunxrjft/|)1}]?-_+~>i!lI;:,\"^`'. ";

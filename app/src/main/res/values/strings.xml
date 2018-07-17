@@ -18,4 +18,6 @@
     <string name="camera_permission_title">Camera</string>
     <string name="ok">OK</string>
     <string name="not_now">Not Now</string>
+    <string name="cd_iv_ascii">Ascii Camera Preview</string>
+    <string name="cd_btn_capture_ascii">Capture Camera ASCII Image</string>
 </resources>

@@ -41,8 +41,6 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
     int normalizationLevel = CameraConsts.DEFAULT_NORMALIZATION;
     BitmapHolder holder;
 
-    private int selectedWidth = 120;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +61,7 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
         layoutMain = findViewById(R.id.layout_main);
         seekbarNormalization = findViewById(R.id.seekbar_normalization);
 
-        button.setOnClickListener(v -> {
-            captureAsciiImage();
-        });
+        button.setOnClickListener(v -> captureAsciiImage());
 
         seekbarNormalization.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -104,6 +100,7 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
     }
 
 
+    @SuppressWarnings("deprecation")
     private void initCamera() {
         Intent intent = getIntent();
         if (intent == null) {
@@ -116,7 +113,6 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
         boolean useFrontCamera = intent.getBooleanExtra(CameraConsts.KEY_USE_FRONT_CAMERA, false);
         boolean invert         = intent.getBooleanExtra(CameraConsts.KEY_INVERT, false);
         normalizationLevel = intent.getIntExtra(CameraConsts.KEY_NORMALIZATION, CameraConsts.DEFAULT_NORMALIZATION);
-        selectedWidth = imgWidth;
 
 
         int[] screenSize = ScreenUtils.getScreenDimensPx(this);

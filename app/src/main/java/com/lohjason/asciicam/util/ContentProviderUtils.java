@@ -22,10 +22,12 @@ public class ContentProviderUtils {
     private static final String FILEEXTENSION = ".jpg";
     private static final String AUTHORITY     = "com.lohjason.asciicam.fileprovider";
 
+    @SuppressWarnings("UnusedReturnValue")
     public static boolean saveBitmap(Context context, Bitmap bitmap) {
         try {
             clearCache(context);
             File cachePath = new File(context.getCacheDir(), PATH);
+            //noinspection ResultOfMethodCallIgnored
             cachePath.mkdirs();
             String fileName = FILENAME
                               + new SimpleDateFormat("YYMMddHHmmSS", Locale.getDefault()).format(new Date())
@@ -69,6 +71,7 @@ public class ContentProviderUtils {
         if (file.isDirectory()) {
             String[] children = file.list();
             for (String childName : children) {
+                //noinspection ResultOfMethodCallIgnored
                 new File(file, childName).delete();
             }
         }

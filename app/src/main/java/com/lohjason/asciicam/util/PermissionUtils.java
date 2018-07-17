@@ -39,17 +39,4 @@ public class PermissionUtils {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appCompatActivity.startActivity(intent);
     }
-
-    public static boolean hasStoragePermissions(Context context){
-        int hasPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        return hasPermission == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public static void requestStoragePermissions(AppCompatActivity appCompatActivity){
-        ActivityCompat.requestPermissions(appCompatActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_CAMERA);
-    }
-
-    public static boolean canRequestStoreagePermissions(AppCompatActivity appCompatActivity){
-        return ActivityCompat.shouldShowRequestPermissionRationale(appCompatActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
 }

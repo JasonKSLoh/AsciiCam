@@ -7,10 +7,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.CameraActivity">
+    tools:context=".ui.CameraActivity"
+    tools:ignore="RtlHardcoded"
+    >
 
     <ImageView
         android:id="@+id/iv_ascii"
+        android:contentDescription="@string/cd_iv_ascii"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
@@ -34,7 +37,7 @@
         android:layout_margin="@dimen/margin_button_side"
         android:src="@drawable/ic_camera_24dp"
         android:elevation="8dp"
-        />
+        android:contentDescription="@string/cd_btn_capture_ascii"/>
 
     <TextView
         android:layout_width="wrap_content"

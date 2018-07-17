@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class CameraFrameProcessor implements FrameProcessor, ThreadedBitmapProcessor.BitmapProcessedListener {
     private AtomicBoolean isActive = new AtomicBoolean(false);
     private AsciiCallbackListener listener;
-    private int targetWidth = 60;
+    private int targetWidth;
     private boolean invertDarkness = false;
     private int normalizationLevel = 0;
 

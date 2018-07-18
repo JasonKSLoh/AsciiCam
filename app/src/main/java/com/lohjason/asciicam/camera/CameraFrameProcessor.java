@@ -6,8 +6,8 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 
+import com.google.android.gms.common.images.Size;
 import com.lohjason.asciicam.conversion.BitmapProcessor;
-import com.lohjason.asciicam.conversion.ContrastingBitmapProcessor;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,7 +16,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * CameraFrameProcessor
  * Created by Jason on 14/7/2018.
  */
-public class CameraFrameProcessor implements FrameProcessor, ContrastingBitmapProcessor.BitmapProcessedListener {
+public class CameraFrameProcessor implements FixedSizeFrameProcessor,
+                                             BitmapProcessor.BitmapProcessedListener {
     private AtomicBoolean isActive = new AtomicBoolean(false);
     private AsciiCallbackListener listener;
     private int targetWidth;
@@ -24,12 +25,26 @@ public class CameraFrameProcessor implements FrameProcessor, ContrastingBitmapPr
     private int normalizationLevel = 0;
     private int color = 0xFF000000;
 
-    private BitmapProcessor bitmapProcessor;
+    private Size                  frameSize;
+    private ByteArrayOutputStream byteArrayOutputStream;
+    private BitmapProcessor       bitmapProcessor;
+    private Bitmap                bitmap;
 
-    public CameraFrameProcessor(BitmapProcessor bitmapProcessor, int targetWidth, AsciiCallbackListener listener) {
+    public CameraFrameProcessor(BitmapProcessor bitmapProcessor,
+                                int targetWidth,
+                                AsciiCallbackListener listener) {
         this.listener = listener;
         this.bitmapProcessor = bitmapProcessor;
         this.targetWidth = targetWidth;
+    }
+
+    @Override
+    public void setFrameSize(Size frameSize){
+        this.frameSize = frameSize;
+        int numPixels = frameSize.getWidth() * frameSize.getHeight();
+        int arraySize = (int)(numPixels * 1.5 / 4);
+        byteArrayOutputStream = new ByteArrayOutputStream(arraySize);
+        bitmap = Bitmap.createBitmap(frameSize.getWidth(), frameSize.getHeight(), Bitmap.Config.ARGB_8888);
     }
 
     public void setNormalizationLevel(int normalizationLevel){
@@ -52,10 +67,13 @@ public class CameraFrameProcessor implements FrameProcessor, ContrastingBitmapPr
         isActive.set(true);
 
         YuvImage              yuvImage = new YuvImage(frameBytes, ImageFormat.NV21, width, height, null);
-        ByteArrayOutputStream os       = new ByteArrayOutputStream();
-        yuvImage.compressToJpeg(new Rect(0, 0, width, height), 100, os);
-        byte[] jpegByteArray = os.toByteArray();
-        Bitmap bitmap        = BitmapFactory.decodeByteArray(jpegByteArray, 0, jpegByteArray.length);
+        yuvImage.compressToJpeg(new Rect(0, 0, width, height), 100, byteArrayOutputStream);
+        byte[] jpegByteArray = byteArrayOutputStream.toByteArray();
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inBitmap = bitmap;
+        bitmap = BitmapFactory.decodeByteArray(jpegByteArray, 0, jpegByteArray.length);
+        byteArrayOutputStream.reset();
 
         bitmapProcessor.processImage(bitmap,
                                     rotation * 90,

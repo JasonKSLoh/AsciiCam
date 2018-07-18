@@ -61,6 +61,7 @@ public class ThresholdingBitmapProcessor implements BitmapProcessor {
         isDestroyed.set(true);
     }
 
+
     @Override
     public void processImage(Bitmap bitmap, int rotation, int targetWidth, int color, int normalizationLevel, boolean invert) {
         if (isProcessing.get() || isDestroyed.get()) {

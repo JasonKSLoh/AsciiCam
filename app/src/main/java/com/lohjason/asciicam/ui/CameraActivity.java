@@ -41,7 +41,8 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
     CameraFrameProcessor cameraFrameProcessor;
     BitmapProcessor      bitmapProcessor;
     ConstraintLayout     layoutMain;
-    int normalizationLevel = 255 / 2;
+    int     normalizationLevel          = 255 / 2;
+    boolean hasCaptureButtonBeenPressed = false;
     BitmapHolder holder;
 
     @Override
@@ -64,7 +65,7 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
         tvThresholdOrContrast = findViewById(R.id.tv_threshold_or_contrast);
         seekbarNormalization = findViewById(R.id.seekbar_normalization);
 
-        button.setOnClickListener(v -> captureAsciiImage());
+        button.setOnClickListener(v -> cameraButtonPressed());
 
         seekbarNormalization.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -85,7 +86,7 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
         });
     }
 
-    private void captureAsciiImage() {
+    private void cameraButtonPressed() {
         if (cameraSource != null) {
             cameraSource.stop();
             cameraSource.release();
@@ -95,8 +96,10 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
         if (bitmapProcessor != null) {
             bitmapProcessor.stopProcessing();
         }
+        hasCaptureButtonBeenPressed = true;
+    }
 
-
+    private void returnAfterCapture() {
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
         finish();
@@ -111,12 +114,12 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
             finish();
             return;
         }
-        float   fps            = intent.getFloatExtra(CameraConsts.KEY_FPS, 24);
-        int     imgWidth       = intent.getIntExtra(CameraConsts.KEY_IMG_WIDTH, 128);
-        boolean useFrontCamera = intent.getBooleanExtra(CameraConsts.KEY_USE_FRONT_CAMERA, false);
-        boolean invert         = intent.getBooleanExtra(CameraConsts.KEY_INVERT, false);
+        float   fps             = intent.getFloatExtra(CameraConsts.KEY_FPS, 24);
+        int     imgWidth        = intent.getIntExtra(CameraConsts.KEY_IMG_WIDTH, 128);
+        boolean useFrontCamera  = intent.getBooleanExtra(CameraConsts.KEY_USE_FRONT_CAMERA, false);
+        boolean invert          = intent.getBooleanExtra(CameraConsts.KEY_INVERT, false);
         boolean useThresholding = intent.getBooleanExtra(CameraConsts.KEY_THRESHOLDING, false);
-        int color = intent.getIntExtra(CameraConsts.KEY_COLOR, 0xFF000000);
+        int     color           = intent.getIntExtra(CameraConsts.KEY_COLOR, 0xFF000000);
 
         int[] screenSize = ScreenUtils.getScreenDimensPx(this);
 
@@ -144,6 +147,7 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
                 .setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)
                 .setRequestedPreviewSize(requestedPreviewWidth, requestedPreviewHeight)
                 .build(cameraFrameProcessor);
+
     }
 
 
@@ -188,8 +192,12 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
     @Override
     public void newAsciiImage(Bitmap bitmap) {
         runOnUiThread(() -> {
-            ivAscii.setImageBitmap(bitmap);
             holder.setBitmap(bitmap);
+            if (hasCaptureButtonBeenPressed) {
+                returnAfterCapture();
+                return;
+            }
+            ivAscii.setImageBitmap(bitmap);
         });
     }
 }

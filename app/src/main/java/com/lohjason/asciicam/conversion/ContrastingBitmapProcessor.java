@@ -27,8 +27,8 @@ public class ContrastingBitmapProcessor implements BitmapProcessor {
 
 
     private int     numFilteringThreads = 4;
-    private int     lastMinBrightness   = 255;
-    private int     lastMaxBrightness   = 0;
+    private int     lastMinBrightness   = 120;
+    private int     lastMaxBrightness   = 130;
     private BitmapProcessedListener listener;
     private final int outputWidth;
 

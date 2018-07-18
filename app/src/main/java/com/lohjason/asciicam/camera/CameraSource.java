@@ -202,8 +202,8 @@ public class CameraSource {
         /**
          * Creates an instance of the camera source.
          */
-        public CameraSource build(FrameProcessor frameProcessor) {
-            this.cameraSource.frameProcessingRunnable = cameraSource.new FrameProcessingRunnable(frameProcessor);
+        public CameraSource build(FixedSizeFrameProcessor fixedSizeFrameProcessor) {
+            this.cameraSource.frameProcessingRunnable = cameraSource.new FrameProcessingRunnable(fixedSizeFrameProcessor);
             return this.cameraSource;
         }
     }
@@ -311,6 +311,7 @@ public class CameraSource {
             }
             mCamera.startPreview();
 
+            frameProcessingRunnable.setFrameSize(mPreviewSize);
             processingThread = new Thread(frameProcessingRunnable);
             frameProcessingRunnable.setActive(true);
             processingThread.start();
@@ -1040,7 +1041,7 @@ public class CameraSource {
      * received frame will immediately start on the same thread.
      */
     private class FrameProcessingRunnable implements Runnable {
-        private FrameProcessor frameProcessor;
+        private FixedSizeFrameProcessor fixedSizeFrameProcessor;
         private long mStartTimeMillis = SystemClock.elapsedRealtime();
 
         // This lock guards all of the member variables below.
@@ -1052,8 +1053,8 @@ public class CameraSource {
         private int mPendingFrameId = 0;
         private ByteBuffer pendingFrameData;
 
-        FrameProcessingRunnable(FrameProcessor frameProcessor) {
-            this.frameProcessor = frameProcessor;
+        FrameProcessingRunnable(FixedSizeFrameProcessor fixedSizeFrameProcessor) {
+            this.fixedSizeFrameProcessor = fixedSizeFrameProcessor;
         }
 
         /**
@@ -1063,7 +1064,11 @@ public class CameraSource {
         @SuppressLint("Assert")
         void release() {
             assert (processingThread.getState() == Thread.State.TERMINATED);
-            frameProcessor = null;
+            fixedSizeFrameProcessor = null;
+        }
+
+        void setFrameSize(Size frameSize){
+            fixedSizeFrameProcessor.setFrameSize(frameSize);
         }
 
         /**
@@ -1167,9 +1172,9 @@ public class CameraSource {
 
                 try {
 //                    if(mRotation % 90 % 2 == 0){
-//                        frameProcessor.processFrame(data.array(), mPreviewSize.getHeight(), mPreviewSize.getWidth(), mRotation);
+//                        fixedSizeFrameProcessor.processFrame(data.array(), mPreviewSize.getHeight(), mPreviewSize.getWidth(), mRotation);
 //                    } else {
-                        frameProcessor.processFrame(data.array(), mPreviewSize.getWidth(), mPreviewSize.getHeight(), mRotation);
+                        fixedSizeFrameProcessor.processFrame(data.array(), mPreviewSize.getWidth(), mPreviewSize.getHeight(), mRotation);
 //                    }
                 } catch (Throwable t) {
                     Logg.e(TAG, "Exception thrown from receiver.", t);

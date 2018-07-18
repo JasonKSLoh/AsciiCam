@@ -57,7 +57,6 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
     private void setupViews() {
         button = findViewById(R.id.btn_capture_ascii);
         ivAscii = findViewById(R.id.iv_ascii);
-        ivAscii.setDrawingCacheEnabled(true);
         layoutMain = findViewById(R.id.layout_main);
         seekbarNormalization = findViewById(R.id.seekbar_normalization);
 

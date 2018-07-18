@@ -76,10 +76,10 @@ public class LaunchActivity extends AppCompatActivity {
         restoreSavedPreferences();
     }
 
-    private void bindViews(){
+    private void bindViews() {
         spinnerFps = findViewById(R.id.spinner_fps);
         spinnerImageWidth = findViewById(R.id.spinner_image_width);
-        switchNormalization = findViewById(R.id.switch_normalization);
+        switchNormalization = findViewById(R.id.switch_use_thresholding);
         switchInvert = findViewById(R.id.switch_invert);
         switchFrontCamera = findViewById(R.id.switch_front_camera);
         btnStartCamera = findViewById(R.id.btn_start_camera);
@@ -109,7 +109,7 @@ public class LaunchActivity extends AppCompatActivity {
 
     private void restoreSavedPreferences() {
         switchFrontCamera.setChecked(SharedPrefsUtils.getUseFrontCamera(this));
-        switchNormalization.setChecked(SharedPrefsUtils.getNormalization(this));
+        switchNormalization.setChecked(SharedPrefsUtils.getUseThresholding(this));
         switchInvert.setChecked(SharedPrefsUtils.getInvert(this));
 
         float preferredFps      = SharedPrefsUtils.getFps(this);
@@ -141,11 +141,12 @@ public class LaunchActivity extends AppCompatActivity {
         intent.putExtra(CameraConsts.KEY_FPS, fps);
         intent.putExtra(CameraConsts.KEY_IMG_WIDTH, imageWidth);
         intent.putExtra(CameraConsts.KEY_USE_FRONT_CAMERA, useFrontCamera);
-        if (normalize) {
-            intent.putExtra(CameraConsts.KEY_NORMALIZATION, CameraConsts.MAX_NORMALIZATION);
-        } else {
-            intent.putExtra(CameraConsts.KEY_NORMALIZATION, CameraConsts.DEFAULT_NORMALIZATION);
-        }
+        intent.putExtra(CameraConsts.KEY_THRESHOLDING, normalize);
+//        if (normalize) {
+//            intent.putExtra(CameraConsts.KEY_THRESHOLDING, CameraConsts.MAX_NORMALIZATION);
+//        } else {
+//            intent.putExtra(CameraConsts.KEY_THRESHOLDING, CameraConsts.DEFAULT_NORMALIZATION);
+//        }
         intent.putExtra(CameraConsts.KEY_INVERT, invert);
 
         startActivityForResult(intent, CameraConsts.REQUEST_CODE_PREVIEW);
@@ -154,12 +155,10 @@ public class LaunchActivity extends AppCompatActivity {
     private void savePreferences() {
         SharedPrefsUtils.setFps(this, CameraConsts.FPS_VALUES[spinnerFps.getSelectedItemPosition()]);
         SharedPrefsUtils.setImageWidth(this, CameraConsts.IMAGE_WIDTHS[spinnerImageWidth.getSelectedItemPosition()]);
-        SharedPrefsUtils.setNormalization(this, switchNormalization.isChecked());
+        SharedPrefsUtils.setUseThresholding(this, switchNormalization.isChecked());
         SharedPrefsUtils.setInvert(this, switchInvert.isChecked());
         SharedPrefsUtils.setUseFrontCamera(this, switchFrontCamera.isChecked());
     }
-
-
 
 
     @Override

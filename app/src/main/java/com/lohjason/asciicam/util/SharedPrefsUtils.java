@@ -21,9 +21,9 @@ public class SharedPrefsUtils {
         return sharedPreferences.getInt(CameraConsts.KEY_IMG_WIDTH, CameraConsts.DEFAULT_IMAGE_WIDTH);
     }
 
-    public static boolean getNormalization(Context context){
+    public static boolean getUseThresholding(Context context){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getBoolean(CameraConsts.KEY_NORMALIZATION, true);
+        return sharedPreferences.getBoolean(CameraConsts.KEY_THRESHOLDING, CameraConsts.DEFAULT_USE_THRESHOLDING);
     }
     public static boolean getInvert(Context context){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -46,10 +46,10 @@ public class SharedPrefsUtils {
         editor.putInt(CameraConsts.KEY_IMG_WIDTH, imageWidth);
         editor.apply();
     }
-    public static void setNormalization(Context context, boolean normalization){
+    public static void setUseThresholding(Context context, boolean normalization){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(CameraConsts.KEY_NORMALIZATION, normalization);
+        editor.putBoolean(CameraConsts.KEY_THRESHOLDING, normalization);
         editor.apply();
     }
     public static void setInvert(Context context, boolean invert){

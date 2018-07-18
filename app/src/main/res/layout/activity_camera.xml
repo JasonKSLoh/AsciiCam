@@ -40,6 +40,7 @@
         android:contentDescription="@string/cd_btn_capture_ascii"/>
 
     <TextView
+        android:id="@+id/tv_threshold_or_contrast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="@id/seekbar_normalization"

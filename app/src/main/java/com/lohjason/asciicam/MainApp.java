@@ -32,7 +32,7 @@ public class MainApp extends Application {
             SharedPrefsUtils.setImageWidth(this, CameraConsts.DEFAULT_IMAGE_WIDTH);
             SharedPrefsUtils.setUseFrontCamera(this, false);
             SharedPrefsUtils.setInvert(this, false);
-            SharedPrefsUtils.setNormalization(this, true);
+            SharedPrefsUtils.setUseThresholding(this, true);
             SharedPrefsUtils.setHasInitialized(this);
         }
     }

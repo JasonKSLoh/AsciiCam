@@ -3,7 +3,7 @@
     <string name="fps">FPS</string>
     <string name="image_width">Ascii Image Width</string>
     <string name="invert_brightness">Invert Brightness</string>
-    <string name="enable_normalization">High Contrast</string>
+    <string name="enable_thresholding">Enable Threshold mode</string>
     <string name="start">Start</string>
     <string name="use_front_camera">Use Front Camera</string>
     <string name="share">Share</string>
@@ -20,4 +20,5 @@
     <string name="not_now">Not Now</string>
     <string name="cd_iv_ascii">Ascii Camera Preview</string>
     <string name="cd_btn_capture_ascii">Capture Camera ASCII Image</string>
+    <string name="threshold">Threshold</string>
 </resources>

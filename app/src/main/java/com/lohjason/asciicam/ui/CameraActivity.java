@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lohjason.asciicam.BitmapHolder;
@@ -20,7 +21,8 @@ import com.lohjason.asciicam.R;
 import com.lohjason.asciicam.camera.CameraFrameProcessor;
 import com.lohjason.asciicam.camera.CameraSource;
 import com.lohjason.asciicam.conversion.BitmapProcessor;
-import com.lohjason.asciicam.conversion.ThreadedBitmapProcessor;
+import com.lohjason.asciicam.conversion.ContrastingBitmapProcessor;
+import com.lohjason.asciicam.conversion.ThresholdingBitmapProcessor;
 import com.lohjason.asciicam.util.CameraConsts;
 import com.lohjason.asciicam.util.Logg;
 import com.lohjason.asciicam.util.ScreenUtils;
@@ -33,12 +35,13 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
 
     ImageButton          button;
     ImageView            ivAscii;
+    TextView             tvThresholdOrContrast;
     SeekBar              seekbarNormalization;
     CameraSource         cameraSource;
     CameraFrameProcessor cameraFrameProcessor;
     BitmapProcessor      bitmapProcessor;
     ConstraintLayout     layoutMain;
-    int normalizationLevel = CameraConsts.DEFAULT_NORMALIZATION;
+    int normalizationLevel = 255 / 2;
     BitmapHolder holder;
 
     @Override
@@ -58,6 +61,7 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
         button = findViewById(R.id.btn_capture_ascii);
         ivAscii = findViewById(R.id.iv_ascii);
         layoutMain = findViewById(R.id.layout_main);
+        tvThresholdOrContrast = findViewById(R.id.tv_threshold_or_contrast);
         seekbarNormalization = findViewById(R.id.seekbar_normalization);
 
         button.setOnClickListener(v -> captureAsciiImage());
@@ -111,18 +115,25 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
         int     imgWidth       = intent.getIntExtra(CameraConsts.KEY_IMG_WIDTH, 128);
         boolean useFrontCamera = intent.getBooleanExtra(CameraConsts.KEY_USE_FRONT_CAMERA, false);
         boolean invert         = intent.getBooleanExtra(CameraConsts.KEY_INVERT, false);
-        normalizationLevel = intent.getIntExtra(CameraConsts.KEY_NORMALIZATION, CameraConsts.DEFAULT_NORMALIZATION);
 
+        boolean useThresholding = intent.getBooleanExtra(CameraConsts.KEY_THRESHOLDING, false);
 
         int[] screenSize = ScreenUtils.getScreenDimensPx(this);
-        bitmapProcessor = new ThreadedBitmapProcessor(screenSize[0]);
+
+        if (!useThresholding) {
+            bitmapProcessor = new ContrastingBitmapProcessor(screenSize[0]);
+            tvThresholdOrContrast.setText(R.string.contrast);
+        } else {
+            bitmapProcessor = new ThresholdingBitmapProcessor(screenSize[0]);
+            tvThresholdOrContrast.setText(R.string.threshold);
+        }
         cameraFrameProcessor = new CameraFrameProcessor(bitmapProcessor, imgWidth, this);
         cameraFrameProcessor.setInvertDarkness(invert);
         bitmapProcessor.setListener(cameraFrameProcessor);
         bitmapProcessor.setFlipHorizontal(useFrontCamera);
-        seekbarNormalization.setProgress((int) (normalizationLevel * CameraConsts.NORMALIZATION_SCALE));
+        seekbarNormalization.setProgress(50);
 
-        int facing = useFrontCamera ? CameraSource.CAMERA_FACING_FRONT : CameraSource.CAMERA_FACING_BACK;
+        int facing                 = useFrontCamera ? CameraSource.CAMERA_FACING_FRONT : CameraSource.CAMERA_FACING_BACK;
         int requestedPreviewWidth  = imgWidth > 240 ? 640 : 320;
         int requestedPreviewHeight = imgWidth > 240 ? 480 : 240;
 

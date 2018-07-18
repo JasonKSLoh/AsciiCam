@@ -7,7 +7,7 @@ import android.graphics.Rect;
 import android.graphics.YuvImage;
 
 import com.lohjason.asciicam.conversion.BitmapProcessor;
-import com.lohjason.asciicam.conversion.ThreadedBitmapProcessor;
+import com.lohjason.asciicam.conversion.ContrastingBitmapProcessor;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * CameraFrameProcessor
  * Created by Jason on 14/7/2018.
  */
-public class CameraFrameProcessor implements FrameProcessor, ThreadedBitmapProcessor.BitmapProcessedListener {
+public class CameraFrameProcessor implements FrameProcessor, ContrastingBitmapProcessor.BitmapProcessedListener {
     private AtomicBoolean isActive = new AtomicBoolean(false);
     private AsciiCallbackListener listener;
     private int targetWidth;

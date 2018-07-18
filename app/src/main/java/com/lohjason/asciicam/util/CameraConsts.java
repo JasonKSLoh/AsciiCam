@@ -8,7 +8,7 @@ public class CameraConsts {
 
     public static final String KEY_FPS              = "key_fps";
     public static final String KEY_IMG_WIDTH        = "key_image_width";
-    public static final String KEY_NORMALIZATION    = "key_normalization";
+    public static final String KEY_THRESHOLDING     = "key_thresholding";
     public static final String KEY_INVERT           = "key_invert";
     public static final String KEY_USE_FRONT_CAMERA = "key_use_front_camera";
 
@@ -19,7 +19,7 @@ public class CameraConsts {
 
     public static final float DEFAULT_FPS = 24;
     public static final int DEFAULT_IMAGE_WIDTH = 120;
-    public static final int DEFAULT_NORMALIZATION = 25;
+    public static final boolean DEFAULT_USE_THRESHOLDING = false;
     public static final boolean DEFAULT_USE_FRONT_CAMERA = false;
     public static final boolean DEFAULT_INVERT = false;
 

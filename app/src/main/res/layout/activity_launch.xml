@@ -90,7 +90,7 @@
         />
 
     <TextView
-        android:id="@+id/tv_normalization_label"
+        android:id="@+id/tv_use_thresholding_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -98,16 +98,16 @@
         android:layout_marginLeft="@dimen/margin_label_side"
         android:layout_marginTop="@dimen/margin_label_top"
         android:textSize="@dimen/textsize_label"
-        android:text="@string/enable_normalization"
+        android:text="@string/enable_thresholding"
         android:textColor="@color/launchPageTextColor"
         />
 
     <Switch
-        android:id="@+id/switch_normalization"
+        android:id="@+id/switch_use_thresholding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/tv_normalization_label"
-        app:layout_constraintBottom_toBottomOf="@id/tv_normalization_label"
+        app:layout_constraintTop_toTopOf="@id/tv_use_thresholding_label"
+        app:layout_constraintBottom_toBottomOf="@id/tv_use_thresholding_label"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="@dimen/margin_selector_side"
         />
@@ -116,7 +116,7 @@
         android:id="@+id/tv_invert_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tv_normalization_label"
+        app:layout_constraintTop_toBottomOf="@id/tv_use_thresholding_label"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/margin_label_side"
         android:layout_marginTop="@dimen/margin_label_top"
@@ -134,6 +134,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="@dimen/margin_selector_side"
         />
+
 
     <Button
         android:id="@+id/btn_start_camera"
@@ -157,7 +158,6 @@
         android:background="@color/white"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible"
         >
     </LinearLayout>
 

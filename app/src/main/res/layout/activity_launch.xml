@@ -135,6 +135,44 @@
         android:layout_marginRight="@dimen/margin_selector_side"
         />
 
+    <TextView
+        android:id="@+id/tv_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_invert_label"
+        android:textSize="@dimen/textsize_label"
+        android:layout_marginTop="@dimen/margin_label_top"
+        android:layout_marginLeft="@dimen/margin_label_side"
+        android:text="@string/ascii_color"
+        android:textColor="@color/launchPageTextColor"
+        />
+
+    <View
+        android:id="@+id/view_color_preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/material_red_400"
+        app:layout_constraintDimensionRatio="W, 1:1"
+        app:layout_constraintTop_toTopOf="@id/tv_color"
+        app:layout_constraintBottom_toBottomOf="@id/tv_color"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/margin_button_side"
+        android:layout_marginLeft="@dimen/margin_button_side"
+        />
+
+    <SeekBar
+        android:id="@+id/seekbar_color"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_color"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/margin_button_side"
+        android:layout_marginRight="@dimen/margin_button_side"
+        android:layout_marginTop="@dimen/margin_button_top"
+        android:scaleY="2"
+        />
 
     <Button
         android:id="@+id/btn_start_camera"

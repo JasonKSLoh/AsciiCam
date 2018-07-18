@@ -22,6 +22,7 @@ public class CameraFrameProcessor implements FrameProcessor, ContrastingBitmapPr
     private int targetWidth;
     private boolean invertDarkness = false;
     private int normalizationLevel = 0;
+    private int color = 0xFF000000;
 
     private BitmapProcessor bitmapProcessor;
 
@@ -37,6 +38,10 @@ public class CameraFrameProcessor implements FrameProcessor, ContrastingBitmapPr
 
     public void setInvertDarkness(boolean invertDarkness){
         this.invertDarkness = invertDarkness;
+    }
+
+    public void setColor(int color){
+        this.color = color;
     }
 
     @Override
@@ -55,7 +60,7 @@ public class CameraFrameProcessor implements FrameProcessor, ContrastingBitmapPr
         bitmapProcessor.processImage(bitmap,
                                     rotation * 90,
                                      targetWidth,
-                                     0xFF000000,
+                                     color,
                                      normalizationLevel,
                                      invertDarkness);
     }

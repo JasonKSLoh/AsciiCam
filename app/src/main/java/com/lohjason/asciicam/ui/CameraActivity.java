@@ -115,8 +115,8 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
         int     imgWidth       = intent.getIntExtra(CameraConsts.KEY_IMG_WIDTH, 128);
         boolean useFrontCamera = intent.getBooleanExtra(CameraConsts.KEY_USE_FRONT_CAMERA, false);
         boolean invert         = intent.getBooleanExtra(CameraConsts.KEY_INVERT, false);
-
         boolean useThresholding = intent.getBooleanExtra(CameraConsts.KEY_THRESHOLDING, false);
+        int color = intent.getIntExtra(CameraConsts.KEY_COLOR, 0xFF000000);
 
         int[] screenSize = ScreenUtils.getScreenDimensPx(this);
 
@@ -129,6 +129,7 @@ public class CameraActivity extends AppCompatActivity implements CameraFrameProc
         }
         cameraFrameProcessor = new CameraFrameProcessor(bitmapProcessor, imgWidth, this);
         cameraFrameProcessor.setInvertDarkness(invert);
+        cameraFrameProcessor.setColor(color);
         bitmapProcessor.setListener(cameraFrameProcessor);
         bitmapProcessor.setFlipHorizontal(useFrontCamera);
         seekbarNormalization.setProgress(50);

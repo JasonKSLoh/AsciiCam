@@ -21,4 +21,6 @@
     <string name="cd_iv_ascii">Ascii Camera Preview</string>
     <string name="cd_btn_capture_ascii">Capture Camera ASCII Image</string>
     <string name="threshold">Threshold</string>
+    <string name="color">Color</string>
+    <string name="ascii_color">ASCII Image Color</string>
 </resources>

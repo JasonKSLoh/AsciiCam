@@ -2,11 +2,13 @@ package com.lohjason.asciicam.ui;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -46,10 +49,13 @@ public class LaunchActivity extends AppCompatActivity {
     Switch       switchNormalization;
     Switch       switchInvert;
     Switch       switchFrontCamera;
+    View         viewColorPreview;
+    SeekBar      seekbarColor;
     Button       btnStartCamera;
     LinearLayout containerMain;
 
     private boolean isDisplayingFragment = false;
+    int color = 0xFF000000;
 
     BitmapHolder holder;
 
@@ -71,6 +77,34 @@ public class LaunchActivity extends AppCompatActivity {
                 PermissionUtils.requestCameraPermission(this);
             }
         });
+
+        seekbarColor.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(progress >= 5){
+                    float hue = progress * 3.6f;
+                    float[] hsl = new float[]{hue, 1f, 0.5f};
+                    color = ColorUtils.HSLToColor(hsl);
+                } else {
+                    color = 0xFF000000;
+                }
+                seekbarColor.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                viewColorPreview.setBackgroundColor(color);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        seekbarColor.getProgressDrawable().setColorFilter(0xFF000000, PorterDuff.Mode.SRC_ATOP);
+        viewColorPreview.setBackgroundColor(0xFF000000);
+
         setupSpinners();
 
         restoreSavedPreferences();
@@ -84,6 +118,8 @@ public class LaunchActivity extends AppCompatActivity {
         switchFrontCamera = findViewById(R.id.switch_front_camera);
         btnStartCamera = findViewById(R.id.btn_start_camera);
         containerMain = findViewById(R.id.container_main);
+        seekbarColor = findViewById(R.id.seekbar_color);
+        viewColorPreview = findViewById(R.id.view_color_preview);
     }
 
     private void setupSpinners() {
@@ -142,12 +178,8 @@ public class LaunchActivity extends AppCompatActivity {
         intent.putExtra(CameraConsts.KEY_IMG_WIDTH, imageWidth);
         intent.putExtra(CameraConsts.KEY_USE_FRONT_CAMERA, useFrontCamera);
         intent.putExtra(CameraConsts.KEY_THRESHOLDING, normalize);
-//        if (normalize) {
-//            intent.putExtra(CameraConsts.KEY_THRESHOLDING, CameraConsts.MAX_NORMALIZATION);
-//        } else {
-//            intent.putExtra(CameraConsts.KEY_THRESHOLDING, CameraConsts.DEFAULT_NORMALIZATION);
-//        }
         intent.putExtra(CameraConsts.KEY_INVERT, invert);
+        intent.putExtra(CameraConsts.KEY_COLOR, color);
 
         startActivityForResult(intent, CameraConsts.REQUEST_CODE_PREVIEW);
     }
